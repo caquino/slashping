@@ -1,0 +1,16 @@
+name: Proof of Concept (composite)
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+
+jobs:
+  poc:
+    name: PoC
+    runs-on: ubuntu-latest
+    steps:
+      - name: Uses slashping
+        uses: caquino/slashping@v1.0.0
