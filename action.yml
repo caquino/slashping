@@ -1,0 +1,34 @@
+name: 'docker-compose smart health checker'
+description: 'This action reads docker-compose.yml and identify exposed ports to try to health check. Try to guess protocol based on image name.'
+inputs:
+  blacklist-ports:
+    description: 'Ports to blacklist and not run health checks'
+    required: false
+    default: '[]'
+  check-timeout:
+    description: 'Timeout for health checks'
+    required: false
+    default: 30
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download health checker binary
+      shell: bash
+      run: |
+        curl -s https://api.github.com/repos/caquino/slashping/releases/latest
+        gem install octokit --silent
+        gem install dogapi --silent
+    - name: Export extra data
+      shell: bash
+      run: |
+        if [ "${{ inputs.metrics-type }}" == "velocity" ]; then
+          echo "PR_NUMBER=${{github.event.pull_request.number}}" >> $GITHUB_ENV
+          echo "ACTION=${{github.event.action}}" >> $GITHUB_ENV
+        else
+          echo "ACTION=${{ inputs.metrics-type }}" >> $GITHUB_ENV
+        fi
+    - id: metric
+      shell: bash
+      run: |
+        ruby ${{ github.action_path }}/report_github_metrics.rb ${{github.repository}} ${{github.run_id}} ${{ inputs.datadog-metric-prefix }} '${{ inputs.teams }}' '${{ inputs.tagged-branches }}' '${{ inputs.custom-tags }}'
