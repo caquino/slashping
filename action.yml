@@ -19,7 +19,6 @@ runs:
         repository: "caquino/slashping"
         latest: true
         fileName: "slashping_*_Linux_x86_64.tar.gz"
-        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Extract slashping release
       shell: bash
       run: |
