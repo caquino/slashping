@@ -13,4 +13,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Uses slashping
-        uses: caquino/slashping@v1.0.1
+        uses: caquino/slashping@v1.0.2
